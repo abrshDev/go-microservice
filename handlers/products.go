@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 
 	"github.com/abrshDev/data"
+	"github.com/gorilla/mux"
 )
 
 type Products struct {
@@ -16,34 +17,8 @@ type Products struct {
 func NewProduct(l *log.Logger) *Products {
 	return &Products{l}
 }
-func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		p.getProducts(rw, r)
-		return
-	}
-	if r.Method == http.MethodPost {
-		p.addProduct(rw, r)
-		return
-	}
-	if r.Method == http.MethodPut {
-		reg := regexp.MustCompile(`/([0-9]+)`)
-		g := reg.FindAllStringSubmatch(r.URL.Path, -1)
-		if len(g) != 1 {
-			http.Error(rw, "invalid uri", http.StatusInternalServerError)
-		}
-		if len(g[0]) != 2 {
-			p.l.Println("invalid uri more than one capcha group")
-			http.Error(rw, "invalid uri", http.StatusInternalServerError)
-		}
-		idString := g[0][1]
-		id, _ := strconv.Atoi(idString)
-		p.l.Println("got id", id)
-		p.updateProducts(id, rw, r)
-	}
-	rw.WriteHeader(http.StatusMethodNotAllowed)
 
-}
-func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("handle get products")
 	lp := data.GetProducts()
 	err := lp.ToJson(rw)
@@ -53,7 +28,7 @@ func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 
 }
 
-func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("handle add prodcuts")
 	prod := &data.Product{}
 	err := prod.FromJson(r.Body)
@@ -64,14 +39,14 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	data.AddProduct(prod)
 }
 
-func (p *Products) updateProducts(id int, rw http.ResponseWriter, r *http.Request) {
+func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("handle update products")
-	prod := &data.Product{}
-	err := prod.FromJson(r.Body)
-	if err != nil {
-		http.Error(rw, "unable to marshal json", http.StatusBadRequest)
-	}
-	err = data.UpdateProduct(id, prod)
+
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	p.l.Println("got id:", id)
+	prod := r.Context().Value(keyProduct{}).(data.Product)
+	err = data.UpdateProduct(id, &prod)
 	if err == data.Errorproductnotfound {
 		http.Error(rw, "product not found ", http.StatusNotFound)
 		return
@@ -81,4 +56,20 @@ func (p *Products) updateProducts(id int, rw http.ResponseWriter, r *http.Reques
 		return
 	}
 
+}
+
+type keyProduct struct{}
+
+func (p Products) MiddleWareValidate(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		prod := &data.Product{}
+		err := prod.FromJson(r.Body)
+		if err != nil {
+			http.Error(rw, "unable to marshal json", http.StatusBadRequest)
+			return
+		}
+		ctx := context.WithValue(r.Context(), keyProduct{}, prod)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(rw, r)
+	})
 }
