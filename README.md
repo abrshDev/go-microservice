@@ -1,22 +1,39 @@
-# 📅 Day 1 – CRUD API in Go (No Framework)
+Go REST API – Now with Gorilla Mux & Validation
+This is an upgraded CRUD (Create, Read, Update, Delete) API built with Go.
+Originally written using only the net/http package, it now includes:
 
-This is a basic CRUD (Create, Read, Update, Delete) API built using **pure Go (net/http)** without any third-party frameworks like Gorilla Mux or Fiber.
+🦍 Gorilla Mux for cleaner routing and subrouters
 
-Part of my **#30DaysOfGo** series.
+✅ Request validation for better input handling
 
----
+📌 Features
+✅ Built with Go’s net/http + github.com/gorilla/mux
 
-## 📌 Features
+✅ RESTful API for basic product/task management
 
-- ✅ Built with Go’s standard `net/http` package
-- ✅ Simple task management API
-- ✅ In-memory data storage (slice or map)
-- ✅ Clean routing and handler structure
+✅ In-memory data storage (slice or map)
 
----
+✅ Clean, modular route handling
 
-## 🚀 How to Run
+✅ Validation for request bodies (e.g. empty fields, data types)
 
-```bash
+✅ Ready for middleware (auth, logging, etc.)
+
+🚀 Getting Started
+bash
+Copy
+Edit
 go run main.go
-```
+Make sure Go is installed (version 1.20+ recommended).
+
+🔄 What's New in This Version?
+Refactored to use Gorilla Mux instead of plain net/http
+
+Added subrouters for method-specific grouping
+
+Added validation logic to improve data integrity
+
+Codebase structured for easier scalability
+
+🔗 GitHub
+github.com/abrshDev/go-microservice
