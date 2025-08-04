@@ -1,0 +1,61 @@
+basePath: /
+consumes:
+  - application/json
+definitions:
+  Product:
+    description: product defines the structure of product
+    properties:
+      description:
+        type: string
+        x-go-name: Description
+      id:
+        description: the id for this user
+        format: int64
+        minimum: 1
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+      price:
+        format: float
+        type: number
+        x-go-name: Price
+      sku:
+        type: string
+        x-go-name: SKU
+    required:
+      - id
+    type: object
+    x-go-package: _/C_/Users/hp/Documents/website/microservice/data
+info:
+  description: The documentation for the Product API.
+  title: of Product API
+  version: 2.0.0
+paths:
+  /products:
+    get:
+      operationId: listProducts
+      responses:
+        "200":
+          $ref: "#/responses/productsResponse"
+      summary: Returns a list of products.
+      tags:
+        - products
+  /products/{id}:
+    delete:
+      operationId: deleteProduct
+      responses:
+        "201":
+          $ref: "#/responses/noContent"
+      summary: delete product.
+      tags:
+        - products
+produces:
+  - application/json
+responses:
+  noContent:
+    description: ""
+schemes:
+  - http
+swagger: "2.0"
