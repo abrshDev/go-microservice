@@ -19,18 +19,6 @@ func NewProduct(l *log.Logger) *Products {
 
 type keyProduct struct{}
 
-//swagger:response noContent
-type productNoContent struct {
-}
-
-// swagger :parametrs deleteProduct
-type productIdParammetrWrapper struct {
-	//the id of the product to delete from the database
-	// in:path
-	// required : true
-	ID int `json:"id"`
-}
-
 func (p *Products) MiddleWareValidate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		prod := &data.Product{}

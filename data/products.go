@@ -18,8 +18,7 @@ import (
 //swagger:model
 type Product struct {
 	//the id for this user
-	//required :true
-	//min:1
+	//required
 	ID          int     `json:"id"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`

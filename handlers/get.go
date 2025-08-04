@@ -6,12 +6,14 @@ import (
 	"github.com/abrshDev/data"
 )
 
-// swagger:route GET /products products listProducts
-// Returns a list of products.
+// swagger:route GET /products listproduct `getProduct
+// get product.
 //
 // Responses:
 //
-//	200: productsResponse
+//	201: noContent
+
+// getproduct from the database
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("handle get products")
 	lp := data.GetProducts()

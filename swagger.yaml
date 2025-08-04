@@ -1,61 +1,59 @@
 basePath: /
 consumes:
-  - application/json
+    - application/json
 definitions:
-  Product:
-    description: product defines the structure of product
-    properties:
-      description:
-        type: string
-        x-go-name: Description
-      id:
-        description: the id for this user
-        format: int64
-        minimum: 1
-        type: integer
-        x-go-name: ID
-      name:
-        type: string
-        x-go-name: Name
-      price:
-        format: float
-        type: number
-        x-go-name: Price
-      sku:
-        type: string
-        x-go-name: SKU
-    required:
-      - id
-    type: object
-    x-go-package: _/C_/Users/hp/Documents/website/microservice/data
+    Product:
+        description: product defines the structure of product
+        properties:
+            description:
+                type: string
+                x-go-name: Description
+            id:
+                description: |-
+                    the id for this user
+                    required
+                format: int64
+                type: integer
+                x-go-name: ID
+            name:
+                type: string
+                x-go-name: Name
+            price:
+                format: float
+                type: number
+                x-go-name: Price
+            sku:
+                type: string
+                x-go-name: SKU
+        type: object
+        x-go-package: _/C_/Users/hp/Documents/website/microservice/data
 info:
-  description: The documentation for the Product API.
-  title: of Product API
-  version: 2.0.0
+    description: The documentation for the Product API.
+    title: of Product API
+    version: 2.0.0
 paths:
-  /products:
-    get:
-      operationId: listProducts
-      responses:
-        "200":
-          $ref: "#/responses/productsResponse"
-      summary: Returns a list of products.
-      tags:
-        - products
-  /products/{id}:
-    delete:
-      operationId: deleteProduct
-      responses:
-        "201":
-          $ref: "#/responses/noContent"
-      summary: delete product.
-      tags:
-        - products
+    /products/{id}:
+        delete:
+            operationId: deleteProduct
+            parameters:
+                - description: the id of the product to delete from the database
+                  format: int64
+                  in: path
+                  name: id
+                  required: true
+                  type: integer
+                  x-go-name: ID
+            responses:
+                "201":
+                    $ref: '#/responses/noContent'
+            summary: delete product.
+            tags:
+                - products
 produces:
-  - application/json
+    - application/json
 responses:
-  noContent:
-    description: ""
+    noContent:
+        description: ""
 schemes:
-  - http
+    - http
 swagger: "2.0"
